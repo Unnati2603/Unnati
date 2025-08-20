@@ -9,10 +9,10 @@
 "use client";
 
 import { FaFileAlt } from 'react-icons/fa';
-import { IoLogoJavascript } from 'react-icons/io';
-import { SiReact, SiNextdotjs } from 'react-icons/si';
-import { MdEmail, MdContactPhone, MdContactMail } from 'react-icons/md';
-import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
+
+import { SiReact } from 'react-icons/si';
+import { MdEmail } from 'react-icons/md';
+import { FaGithub} from 'react-icons/fa';
 import React from 'react';
 import Image from 'next/image';
 
@@ -69,50 +69,36 @@ const createFile = (name: string, path: string, filePath?: string, icon?: React.
 export const aboutMeFileSystem: FileSystemItem[] = [
   createFile('Bio.tsx', '/AboutMe/Bio', '/pages/AboutMe/Bio.tsx'),
   createFolder('Skills', '/AboutMe/Skills'),
-  createFile('Education.tsx', '/AboutMe/Education', '/pages/AboutMe/Education.tsx'),
-  createFile('Hobbies.tsx', '/AboutMe/Hobbies', '/pages/AboutMe/Hobbies.tsx')
+  createFile('Education.tsx', '/AboutMe/Education', '/pages/AboutMe/Education.tsx')
 ];
 
 // Skills subfolder content
 export const skillsFileSystem: FileSystemItem[] = [
-  createFile('Frontend.tsx', '/AboutMe/Skills/Frontend', '/pages/AboutMe/Skills/Frontend.tsx'),
-  createFile('Backend.tsx', '/AboutMe/Skills/Backend', '/pages/AboutMe/Skills/Backend.tsx'),
-  createFile('Tools.tsx', '/AboutMe/Skills/Tools', '/pages/AboutMe/Skills/Tools.tsx')
+  createFile('Frontend.tsx', '/AboutMe/Skills/Frontend', '/pages/AboutMe/Skills/Frontend.tsx')
 ];
 
 // Projects file system structure
 export const projectsFileSystem: FileSystemItem[] = [
-  createFolder('Web Development', '/Projects/WebDev'),
-  createFolder('Mobile Apps', '/Projects/MobileApps'),
-  createFile('README.tsx', '/Projects/README', '/pages/Projects/README.tsx')
+  createFolder('Web Development', '/Projects/WebDev')
 ];
 
 // Web Development subfolder content
 export const webDevFileSystem: FileSystemItem[] = [
-  createFile('Portfolio.tsx', '/Projects/WebDev/Portfolio', '/pages/Projects/WebDev/Portfolio.tsx', <SiReact size={20} color="#61DAFB" />),
-  createFile('E-commerce.tsx', '/Projects/WebDev/E-commerce', '/pages/Projects/WebDev/E-commerce.tsx', <IoLogoJavascript size={20} color="#F7DF1E" />),
-  createFile('Blog.tsx', '/Projects/WebDev/Blog', '/pages/Projects/WebDev/Blog.tsx', <SiNextdotjs size={20} color="#FFFFFF" />)
+  createFile('Portfolio.tsx', '/Projects/WebDev/Portfolio', '/pages/Projects/WebDev/Portfolio.tsx', <SiReact size={20} color="#61DAFB" />)
 ];
 
-// Mobile Apps subfolder content
-export const mobileAppsFileSystem: FileSystemItem[] = [
-  createFile('Fitness-Tracker.tsx', '/Projects/MobileApps/Fitness-Tracker', '/pages/Projects/MobileApps/Fitness-Tracker.tsx', <SiReact size={20} color="#61DAFB" />),
-  createFile('Weather-App.tsx', '/Projects/MobileApps/Weather-App', '/pages/Projects/MobileApps/Weather-App.tsx', <SiReact size={20} color="#61DAFB" />)
-];
+
 
 // Contact file system structure
 export const contactFileSystem: FileSystemItem[] = [
   createFile('Email.tsx', '/Contact/Email', '/pages/Contact/Email.tsx', <MdEmail size={20} color="#FFFFFF" />),
-  createFile('Phone.tsx', '/Contact/Phone', '/pages/Contact/Phone.tsx', <MdContactPhone size={20} color="#FFFFFF" />),
-  createFolder('Social Media', '/Contact/SocialMedia'),
-  createFile('ContactForm.tsx', '/Contact/ContactForm', '/pages/Contact/ContactForm.tsx', <MdContactMail size={20} color="#FFFFFF" />)
+ 
+  createFolder('Social Media', '/Contact/SocialMedia')
 ];
 
 // Social Media subfolder content
 export const socialMediaFileSystem: FileSystemItem[] = [
-  createFile('GitHub.tsx', '/Contact/SocialMedia/GitHub', '/pages/Contact/SocialMedia/GitHub.tsx', <FaGithub size={20} color="#FFFFFF" />),
-  createFile('LinkedIn.tsx', '/Contact/SocialMedia/LinkedIn', '/pages/Contact/SocialMedia/LinkedIn.tsx', <FaLinkedin size={20} color="#FFFFFF" />),
-  createFile('Twitter.tsx', '/Contact/SocialMedia/Twitter', '/pages/Contact/SocialMedia/Twitter.tsx', <FaTwitter size={20} color="#FFFFFF" />)
+  createFile('GitHub.tsx', '/Contact/SocialMedia/GitHub', '/pages/Contact/SocialMedia/GitHub.tsx', <FaGithub size={20} color="#FFFFFF" />)
 ];
 
 // Root file system structure
@@ -145,7 +131,6 @@ export const getFileSystemItems = (path: string): FileSystemItem[] => {
     '/AboutMe/Skills': skillsFileSystem,
     '/Projects': projectsFileSystem,
     '/Projects/WebDev': webDevFileSystem,
-    '/Projects/MobileApps': mobileAppsFileSystem,
     '/Contact': contactFileSystem,
     '/Contact/SocialMedia': socialMediaFileSystem
   };

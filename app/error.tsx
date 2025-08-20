@@ -12,7 +12,7 @@ export default function Error({
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error(error);
+    console.error("Error occurred:", error);
   }, [error]);
 
   return (
@@ -37,6 +37,9 @@ export default function Error({
         
         <div className="text-sm mb-6">
           <p>The system has encountered an unexpected error. You can try to recover by clicking the buttons below.</p>
+          {error.digest && (
+            <p className="mt-2 text-gray-400">Error digest: {error.digest}</p>
+          )}
         </div>
         
         <div className="flex justify-between">
