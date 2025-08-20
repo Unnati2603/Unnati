@@ -21,7 +21,7 @@ const Education = () => {
         <p className="text-gray-400">2018 - 2020</p>
         <ul className="list-disc pl-5 mt-2">
           <li>Specialized in Human-Computer Interaction</li>
-          <li>Thesis: "Improving User Experience in Progressive Web Applications"</li>
+          <li>Thesis: Improving User Experience in Progressive Web Applications</li>
           <li>GPA: 3.9/4.0</li>
         </ul>
       </div>
