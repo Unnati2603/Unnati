@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Windows XP Portfolio
 
-## Getting Started
+Remember the good old days of Windows XP? That satisfying sound when you booted up your computer, the iconic bliss wallpaper, and those chunky folder icons? Well, I got a bit nostalgic and decided to build my portfolio as a Windows XP desktop!
 
-First, run the development server:
+
+This is my personal portfolio website that looks and feels like Windows XP. Double-click on folders to open them, browse through my projects and skills using a file explorer, and enjoy that sweet, sweet nostalgia while learning about me!
+
+
+- **Desktop with Folders**: Just like the old days - click around and explore!
+- **Authentic Folder Icons**: They even change from closed to open when you click them (just like XP!)
+- **File Explorer Window**: Browse through my portfolio content like you're using Windows Explorer
+- **No Clippy**: I promise, no annoying paper clips will pop up asking if you need help
+
+##  How It Works
+
+I created a custom Folder component that uses the original Windows XP folder icons. When you double-click a folder, it opens the File Explorer to show you the contents. Everything is organized in folders just like you'd expect!
+
+## 🚀 Want to Run This Locally?
+
+If you want to run this project on your own computer (maybe you want to see how I built it or just want to click around locally), here's how:
 
 ```bash
+# Install all the dependencies
+npm install
+
+# Fire up the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open [http://localhost:3000](http://localhost:3000) in your browser and enjoy the Windows XP experience!
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔧 Tech Behind the Scenes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+I built this using:
+- **Next.js**: For all the React goodness with server-side rendering
+- **TypeScript**: To keep my code less buggy
+- **Tailwind CSS**: For styling everything quickly
+- **Custom Icons**: Those authentic Windows XP icons for maximum nostalgia
 
-## Learn More
+## 💡 Have Ideas or Feedback?
 
-To learn more about Next.js, take a look at the following resources:
+If you have suggestions for how to make this portfolio even more Windows XP-like, or if you found a bug, feel free to reach out! I'm always looking to improve and add more nostalgic features.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*No actual Windows XP systems were harmed in the making of this portfolio.*

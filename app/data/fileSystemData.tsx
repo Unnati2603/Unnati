@@ -8,12 +8,25 @@
 
 "use client";
 
-import { FaFolder, FaFileAlt } from 'react-icons/fa';
+import { FaFileAlt } from 'react-icons/fa';
 import { IoLogoJavascript } from 'react-icons/io';
 import { SiReact, SiNextdotjs } from 'react-icons/si';
 import { MdEmail, MdContactPhone, MdContactMail } from 'react-icons/md';
 import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import React from 'react';
+import Image from 'next/image';
+
+// Custom folder icon component
+const FolderIcon = ({ isOpen = false }: { isOpen?: boolean }) => (
+  <Image
+    src={isOpen ? '/assets/Open Folder.ico' : '/assets/Closed folder.ico'}
+    alt={isOpen ? 'Open folder' : 'Closed folder'}
+    width={20}
+    height={20}
+    className="object-contain"
+    unoptimized={true}
+  />
+);
 
 // Core interfaces for the file system
 export interface Folder {
@@ -21,6 +34,7 @@ export interface Folder {
   path: string;
   icon: React.ReactNode;
   type: 'folder';
+  isOpen?: boolean;
 }
 
 export interface File {
@@ -35,11 +49,12 @@ export interface File {
 export type FileSystemItem = Folder | File;
 
 // Factory functions to create file system items
-const createFolder = (name: string, path: string): Folder => ({
+const createFolder = (name: string, path: string, isOpen: boolean = false): Folder => ({
   name,
   path,
-  icon: <FaFolder size={20} color="#FFD700" />,
-  type: 'folder'
+  icon: <FolderIcon isOpen={isOpen} />,
+  type: 'folder',
+  isOpen
 });
 
 const createFile = (name: string, path: string, filePath?: string, icon?: React.ReactNode): File => ({

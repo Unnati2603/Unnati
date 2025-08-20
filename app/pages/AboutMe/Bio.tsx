@@ -17,7 +17,7 @@ const Bio = () => {
       
       <p className="mb-3">
         I am a passionate developer with expertise in web technologies and a love for creating 
-        intuitive user experiences. With several years of experience in the industry, I've worked 
+        intuitive user experiences. With several years of experience in the industry, ve worked 
         on a variety of projects ranging from small business websites to complex enterprise applications.
       </p>
       
@@ -28,7 +28,7 @@ const Bio = () => {
       </p>
       
       <p>
-        When I'm not coding, you can find me exploring the outdoors, reading, or experimenting 
+        When I not coding, you can find me exploring the outdoors, reading, or experimenting 
         with new recipes in the kitchen.
       </p>
     </div>

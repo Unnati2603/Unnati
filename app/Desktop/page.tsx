@@ -4,9 +4,9 @@
 All icons are pages themselves and parts of portfolio
 */
 
-import { FaFolderClosed } from "react-icons/fa6";
 import { useState } from "react";
 import FileExplorer from "../components/FileExplorer/FileExplorer";
+import Folder from "../components/Folder/Folder";
 
 export default function Desktop(){
     const [fileExplorerState, setFileExplorerState] = useState({
@@ -47,33 +47,30 @@ export default function Desktop(){
 
     return (
         <div className="p-4">
-            <div className="flex flex-wrap">
+            <div className="flex flex-col">
                 {/* About Me Folder */}
-                <div 
-                    className="flex flex-col items-center cursor-pointer w-20 ml-4 mt-4" 
-                    onDoubleClick={() => handleDoubleClick('/AboutMe')}
-                >
-                    <FaFolderClosed size={40} color="#FFD700" />
-                    <span className="mt-1 text-white text-sm text-center">About Me</span>
-                </div>
+                <Folder 
+                    name="About Me"
+                    path="/AboutMe"
+                    onDoubleClick={handleDoubleClick}
+                    isOpen={fileExplorerState.isOpen && fileExplorerState.path === '/AboutMe'}
+                />
 
                 {/* Projects Folder */}
-                <div 
-                    className="flex flex-col items-center cursor-pointer w-20 ml-4 mt-4" 
-                    onDoubleClick={() => handleDoubleClick('/Projects')}
-                >
-                    <FaFolderClosed size={40} color="#FFD700" />
-                    <span className="mt-1 text-white text-sm text-center">Projects</span>
-                </div>
+                <Folder 
+                    name="Projects"
+                    path="/Projects"
+                    onDoubleClick={handleDoubleClick}
+                    isOpen={fileExplorerState.isOpen && fileExplorerState.path === '/Projects'}
+                />
 
                 {/* Contact Folder */}
-                <div 
-                    className="flex flex-col items-center cursor-pointer w-20 ml-4 mt-4" 
-                    onDoubleClick={() => handleDoubleClick('/Contact')}
-                >
-                    <FaFolderClosed size={40} color="#FFD700" />
-                    <span className="mt-1 text-white text-sm text-center">Contact</span>
-                </div>
+                <Folder 
+                    name="Contact"
+                    path="/Contact"
+                    onDoubleClick={handleDoubleClick}
+                    isOpen={fileExplorerState.isOpen && fileExplorerState.path === '/Contact'}
+                />
             </div>
 
             <FileExplorer 

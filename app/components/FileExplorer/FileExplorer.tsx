@@ -227,6 +227,7 @@ const FileExplorer: React.FC<FileExplorerProps> = ({
           folders={sidebarFolders}
           onItemClick={handleItemClick}
           onItemDoubleClick={handleItemDoubleClick}
+          currentPath={currentPath}
         />
         
         <FileContent 
