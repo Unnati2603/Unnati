@@ -1,42 +1,60 @@
+/**
+ * FileExplorer Component
+ * 
+ * This component creates a resizable, draggable file explorer window that allows users to
+ * navigate through a virtual file system. It displays folders and files, handles navigation
+ * with back/forward functionality, and can render file contents or components.
+ */
+
 "use client";
-
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { FaFolderClosed, FaFolder } from 'react-icons/fa6';
-import { FaFileAlt, FaMinus } from 'react-icons/fa';
-import { IoMdArrowBack, IoMdArrowForward } from 'react-icons/io';
-import { AiOutlineClose } from 'react-icons/ai';
-import { MdMaximize } from 'react-icons/md';
 import { Rnd } from 'react-rnd';
+import { FileSystemItem, File, sidebarFolders } from '../../data/fileSystemData';
+import { loadFileComponent } from '../../data/componentLoader';
 
-interface Folder {
-  name: string;
-  path: string;
-  icon: React.ReactNode;
-  type: 'folder';
+// Import extracted components
+import TitleBar from './components/TitleBar';
+import NavigationBar from './components/NavigationBar';
+import Sidebar from './components/Sidebar';
+import FileContent from './components/FileContent';
+import StatusBar from './components/StatusBar';
+
+interface FileExplorerProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialPath?: string;
 }
 
-interface File {
-  name: string;
-  path: string;
-  icon: React.ReactNode;
-  type: 'file';
-  content?: string;
-}
-
-type FileSystemItem = Folder | File;
-
-const FileExplorer: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ 
+const FileExplorer: React.FC<FileExplorerProps> = ({ 
   isOpen, 
-  onClose 
+  onClose,
+  initialPath = '/'
 }) => {
-  const router = useRouter();
-  const [currentPath, setCurrentPath] = useState<string>('/');
-  const [history, setHistory] = useState<string[]>(['/']);
+  // State management for navigation and UI
+  const [currentPath, setCurrentPath] = useState<string>(initialPath);
+  const [history, setHistory] = useState<string[]>([initialPath]);
   const [historyIndex, setHistoryIndex] = useState<number>(0);
   const [isMaximized, setIsMaximized] = useState<boolean>(false);
   const [windowSize, setWindowSize] = useState({ width: 800, height: 600 });
   const [windowPosition, setWindowPosition] = useState({ x: 0, y: 0 });
+  
+  // State for file/folder selection and content display
+  const [selectedItem, setSelectedItem] = useState<FileSystemItem | null>(null);
+  const [fileContent, setFileContent] = useState<string | null>(null);
+  const [selectedFileComponent, setSelectedFileComponent] = useState<React.ReactNode | null>(null);
+  
+  // Update state when initialPath changes
+  useEffect(() => {
+    if (initialPath) {
+      setCurrentPath(initialPath);
+      setHistory([initialPath]);
+      setHistoryIndex(0);
+      // Clear file content and component when initialPath changes
+      setFileContent(null);
+      setSelectedFileComponent(null);
+      setSelectedItem(null);
+    }
+  }, [initialPath]);
   
   // Initialize window position when component mounts
   useEffect(() => {
@@ -48,128 +66,106 @@ const FileExplorer: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
     }
   }, [isOpen, windowSize.width, windowSize.height]);
 
-  // Define the folders for the sidebar
-  const sidebarFolders: Folder[] = [
-    { 
-      name: 'About Me', 
-      path: '/components/AboutMe', 
-      icon: <FaFolder size={20} color="#FFD700" />,
-      type: 'folder'
-    },
-    { 
-      name: 'Projects', 
-      path: '/components/Projects', 
-      icon: <FaFolder size={20} color="#FFD700" />,
-      type: 'folder'
-    }
-  ];
-
-  // Define the files and folders for the main area based on the current path
-  const getFileSystemItems = (path: string): FileSystemItem[] => {
-    switch (path) {
-      case '/':
-        return [
-          ...sidebarFolders,
-          { 
-            name: 'README.txt', 
-            path: '/readme', 
-            icon: <FaFileAlt size={20} color="#FFFFFF" />,
-            type: 'file',
-            content: 'Welcome to my portfolio! Double-click on folders to explore more about me and my projects.'
-          }
-        ];
-      case '/components/AboutMe':
-        return [
-          { 
-            name: 'Bio.txt', 
-            path: '/components/AboutMe/bio', 
-            icon: <FaFileAlt size={20} color="#FFFFFF" />,
-            type: 'file',
-            content: 'I am a passionate developer with expertise in web technologies.'
-          },
-          { 
-            name: 'Skills.txt', 
-            path: '/components/AboutMe/skills', 
-            icon: <FaFileAlt size={20} color="#FFFFFF" />,
-            type: 'file',
-            content: 'My skills include: React, Next.js, TypeScript, Tailwind CSS, and more.'
-          }
-        ];
-      case '/components/Projects':
-        return [
-          { 
-            name: 'Project1.txt', 
-            path: '/components/Projects/project1', 
-            icon: <FaFileAlt size={20} color="#FFFFFF" />,
-            type: 'file',
-            content: 'This is a description of Project 1.'
-          },
-          { 
-            name: 'Project2.txt', 
-            path: '/components/Projects/project2', 
-            icon: <FaFileAlt size={20} color="#FFFFFF" />,
-            type: 'file',
-            content: 'This is a description of Project 2.'
-          }
-        ];
-      default:
-        return [];
-    }
-  };
-
-  const [selectedItem, setSelectedItem] = useState<FileSystemItem | null>(null);
-  const [fileContent, setFileContent] = useState<string | null>(null);
-
+  /**
+   * Handle item selection - updates selected item state and loads content
+   */
   const handleItemClick = (item: FileSystemItem) => {
     setSelectedItem(item);
     if (item.type === 'file') {
-      setFileContent((item as File).content || '');
+      loadFileContent(item as File);
     } else {
-      setFileContent(null);
+      clearFileContent();
     }
   };
 
+  /**
+   * Handle double-click on items - for files, same as click, for folders navigate into them
+   */
   const handleItemDoubleClick = (item: FileSystemItem) => {
     if (item.type === 'folder') {
       navigateTo(item.path);
     } else if (item.type === 'file') {
-      setFileContent((item as File).content || '');
+      loadFileContent(item as File);
     }
   };
 
+  /**
+   * Load file content or component based on file properties
+   */
+  const loadFileContent = (fileItem: File) => {
+    if (fileItem.filePath) {
+      // If there's a filePath, try to load the component
+      setSelectedFileComponent(loadFileComponent(fileItem));
+      setFileContent(null);
+    } else if (fileItem.content) {
+      // Fall back to content if no filePath
+      setFileContent(fileItem.content);
+      setSelectedFileComponent(null);
+    } else {
+      setFileContent('No content available');
+      setSelectedFileComponent(null);
+    }
+  };
+
+  /**
+   * Clear file content and component state
+   */
+  const clearFileContent = () => {
+    setFileContent(null);
+    setSelectedFileComponent(null);
+  };
+
+  /**
+   * Navigate to a specific path
+   * Updates path, history, and clears file content
+   */
   const navigateTo = (path: string) => {
     setCurrentPath(path);
-    
-    // Update history
+    updateHistory(path);
+    clearFileContent();
+  };
+
+  /**
+   * Update navigation history when navigating to a new path
+   */
+  const updateHistory = (path: string) => {
+    // Only keep history up to current index before adding new path
     const newHistory = history.slice(0, historyIndex + 1);
     newHistory.push(path);
     setHistory(newHistory);
     setHistoryIndex(newHistory.length - 1);
-    
-    // For folders that correspond to actual Next.js routes, navigate there
-    if (path === '/components/AboutMe' || path === '/components/Projects') {
-      router.push(path);
-    }
   };
 
+  /**
+   * Navigate back in history
+   */
   const handleBack = () => {
     if (historyIndex > 0) {
       setHistoryIndex(historyIndex - 1);
       setCurrentPath(history[historyIndex - 1]);
+      clearFileContent();
     }
   };
 
+  /**
+   * Navigate forward in history
+   */
   const handleForward = () => {
     if (historyIndex < history.length - 1) {
       setHistoryIndex(historyIndex + 1);
       setCurrentPath(history[historyIndex + 1]);
+      clearFileContent();
     }
   };
 
+  /**
+   * Toggle window maximized state
+   */
   const handleMaximize = () => {
     setIsMaximized(!isMaximized);
   };
 
+  // Don't render anything if the explorer is closed
   if (!isOpen) return null;
 
   return (
@@ -180,8 +176,8 @@ const FileExplorer: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
         width: windowSize.width,
         height: windowSize.height,
       }}
-      minWidth={400}
-      minHeight={300}
+      minWidth={600}
+      minHeight={400}
       disableDragging={isMaximized}
       enableResizing={!isMaximized}
       dragHandleClassName="title-bar"
@@ -212,93 +208,38 @@ const FileExplorer: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
         setWindowPosition(position);
       }}
     >
-      {/* Title bar */}
-      <div className="flex items-center justify-between bg-gray-900 p-2 rounded-t-lg title-bar">
-        <div className="flex items-center">
-          <FaFolderClosed size={20} color="#FFD700" className="mr-2" />
-          <span className="text-white font-semibold">File Explorer - {currentPath}</span>
-        </div>
-        <div className="flex space-x-2">
-          <button onClick={onClose} className="p-1 hover:bg-gray-700 rounded">
-            <FaMinus size={16} color="#FFFFFF" />
-          </button>
-          <button onClick={handleMaximize} className="p-1 hover:bg-gray-700 rounded">
-            <MdMaximize size={16} color="#FFFFFF" />
-          </button>
-          <button onClick={onClose} className="p-1 hover:bg-gray-700 rounded">
-            <AiOutlineClose size={16} color="#FFFFFF" />
-          </button>
-        </div>
-      </div>
+      <TitleBar 
+        currentPath={currentPath} 
+        onClose={onClose} 
+        onMaximize={handleMaximize} 
+      />
       
-      {/* Toolbar */}
-      <div className="flex items-center bg-gray-800 p-2 border-b border-gray-700">
-        <button 
-          onClick={handleBack} 
-          disabled={historyIndex <= 0}
-          className={`p-1 mr-1 rounded ${historyIndex <= 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-700'}`}
-        >
-          <IoMdArrowBack size={16} color="#FFFFFF" />
-        </button>
-        <button 
-          onClick={handleForward} 
-          disabled={historyIndex >= history.length - 1}
-          className={`p-1 mr-3 rounded ${historyIndex >= history.length - 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-700'}`}
-        >
-          <IoMdArrowForward size={16} color="#FFFFFF" />
-        </button>
-        <div className="bg-gray-700 flex-1 p-2 rounded text-white">
-          {currentPath}
-        </div>
-      </div>
+      <NavigationBar 
+        currentPath={currentPath} 
+        onBack={handleBack} 
+        onForward={handleForward}
+        canGoBack={historyIndex > 0}
+        canGoForward={historyIndex < history.length - 1}
+      />
       
-      {/* Main content */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <div className="w-1/4 bg-gray-800 p-2 border-r border-gray-700 overflow-y-auto">
-          <h3 className="text-white font-semibold mb-2">Quick access</h3>
-          {sidebarFolders.map((folder) => (
-            <div 
-              key={folder.path}
-              className="flex items-center p-2 hover:bg-gray-700 rounded cursor-pointer"
-              onClick={() => handleItemClick(folder)}
-              onDoubleClick={() => handleItemDoubleClick(folder)}
-            >
-              {folder.icon}
-              <span className="ml-2 text-white">{folder.name}</span>
-            </div>
-          ))}
-        </div>
+        <Sidebar 
+          folders={sidebarFolders}
+          onItemClick={handleItemClick}
+          onItemDoubleClick={handleItemDoubleClick}
+        />
         
-        {/* File list */}
-        <div className="flex-1 p-2 overflow-y-auto">
-          {fileContent ? (
-            <div className="bg-gray-700 p-4 rounded text-white h-full overflow-y-auto">
-              <pre className="whitespace-pre-wrap">{fileContent}</pre>
-            </div>
-          ) : (
-            <div className="grid grid-cols-4 gap-4">
-              {getFileSystemItems(currentPath).map((item) => (
-                <div 
-                  key={item.path}
-                  className={`flex flex-col items-center p-2 rounded cursor-pointer
-                    ${selectedItem?.path === item.path ? 'bg-blue-600' : 'hover:bg-gray-700'}`}
-                  onClick={() => handleItemClick(item)}
-                  onDoubleClick={() => handleItemDoubleClick(item)}
-                >
-                  {item.icon}
-                  <span className="mt-1 text-white text-sm text-center">{item.name}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <FileContent 
+          currentPath={currentPath}
+          selectedItem={selectedItem}
+          fileContent={fileContent}
+          selectedFileComponent={selectedFileComponent}
+          onItemClick={handleItemClick}
+          onItemDoubleClick={handleItemDoubleClick}
+        />
       </div>
       
-      {/* Status bar */}
-      <div className="bg-gray-900 p-1 text-gray-400 text-xs border-t border-gray-700 rounded-b-lg">
-        {selectedItem ? `${selectedItem.name} - ${selectedItem.type}` : 'Ready'}
-      </div>
+      <StatusBar selectedItem={selectedItem} />
     </Rnd>
   );
 };
