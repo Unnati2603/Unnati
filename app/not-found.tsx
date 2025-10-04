@@ -1,5 +1,3 @@
-"use client";
-
 import Link from 'next/link';
 
 export default function NotFound() {
@@ -28,7 +26,7 @@ export default function NotFound() {
         </div>
         
         <div className="flex justify-end">
-          <Link href="/Desktop">
+          <Link href="/Desktop" prefetch={false}>
             <button className="bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded">
               Return to Desktop
             </button>

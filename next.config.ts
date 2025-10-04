@@ -16,6 +16,12 @@ const nextConfig: NextConfig = {
     });
     return config;
   },
+  // Add output configuration for handling static generation better
+  output: 'export',
+  // Disable server components during export
+  experimental: {
+    appDocumentPreloading: false,
+  },
 };
 
 export default nextConfig;
